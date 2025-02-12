@@ -2,6 +2,21 @@ const { request, response } = require("express");
 const bcrypt = require("bcryptjs");
 const { User } = require("../models/index");
 
+/**
+ * Retrieves active users from the database with pagination.
+ *
+ * @async
+ * @function getUsers
+ * @param {express.Request} req - Express request object. Expects query parameters:
+ *   - `limit` {number} (optional): Maximum number of users to retrieve. Defaults to 10.
+ *   - `since` {number} (optional): Number of users to skip for pagination. Defaults to 0.
+ * @param {express.Response} res - Express response object.
+ * @returns {Promise<void>} Sends a JSON response containing the total number of active users and a list of users.
+ *
+ * @example
+ * // GET /users?limit=10&since=0
+ * getUsers(req, res);
+ */
 const getUsers = async (req = request, res = response) => {
   try {
     const { limit = 10, since = 0 } = req.query;
@@ -30,6 +45,19 @@ const getUsers = async (req = request, res = response) => {
   }
 };
 
+/**
+ * Retrieves a single user by its ID.
+ *
+ * @async
+ * @function getByIdUsers
+ * @param {express.Request} req - Express request object. Expects `req.params.id` to be provided.
+ * @param {express.Response} res - Express response object.
+ * @returns {Promise<void>} Sends a JSON response containing the user data.
+ *
+ * @example
+ * // GET /users/12345
+ * getByIdUsers(req, res);
+ */
 const getByIdUsers = async (req = request, res = response) => {
   try {
     const { id } = req.params;
@@ -52,6 +80,23 @@ const getByIdUsers = async (req = request, res = response) => {
   }
 };
 
+/**
+ * Creates a new user in the database.
+ *
+ * @async
+ * @function createUsers
+ * @param {express.Request} req - Express request object. Expects `req.body` to include:
+ *   - `name` {string}: The name of the user.
+ *   - `email` {string}: The email of the user.
+ *   - `password` {string}: The password of the user.
+ * @param {express.Response} res - Express response object.
+ * @returns {Promise<void>} Sends a JSON response containing the newly created user.
+ *
+ * @example
+ * // POST /users
+ * // req.body = { name: 'John Doe', email: 'john@example.com', password: 'password123' }
+ * createUsers(req, res);
+ */
 const createUsers = async (req = request, res = response) => {
   try {
     const { name, email, password } = req.body;
@@ -74,6 +119,22 @@ const createUsers = async (req = request, res = response) => {
   }
 };
 
+/**
+ * Updates an existing user's information.
+ *
+ * @async
+ * @function updateUsers
+ * @param {express.Request} req - Express request object. Expects:
+ *   - `req.params.id` {string}: The ID of the user to update.
+ *   - `req.body` {Object}: An object containing the fields to update. If a new `password` is provided, it will be hashed.
+ * @param {express.Response} res - Express response object.
+ * @returns {Promise<void>} Sends a JSON response containing the updated user data.
+ *
+ * @example
+ * // PUT /users/12345
+ * // req.body = { name: 'Jane Doe', password: 'newpassword123' }
+ * updateUsers(req, res);
+ */
 const updateUsers = async (req = request, res = response) => {
   try {
     const { id } = req.params;
@@ -122,6 +183,19 @@ const updateUsers = async (req = request, res = response) => {
   }
 };
 
+/**
+ * Soft deletes a user by setting its state to false.
+ *
+ * @async
+ * @function deleteUsers
+ * @param {express.Request} req - Express request object. Expects `req.params.id` for the user ID.
+ * @param {express.Response} res - Express response object.
+ * @returns {Promise<void>} Sends a JSON response confirming the deletion.
+ *
+ * @example
+ * // DELETE /users/12345
+ * deleteUsers(req, res);
+ */
 const deleteUsers = async (req = request, res = response) => {
   try {
     const { id } = req.params;
