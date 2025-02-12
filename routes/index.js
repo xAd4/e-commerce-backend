@@ -1,3 +1,5 @@
+//! Barrel File
+
 const UserRoutes = require("./UserRoutes");
 const CartRoutes = require("./CartRoutes");
 const CategoryRoutes = require("./CategoryRoutes");

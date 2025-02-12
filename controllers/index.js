@@ -1,3 +1,5 @@
+//! Barrel File
+
 //* User Controller
 const {
   getUsers,
