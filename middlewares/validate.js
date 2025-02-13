@@ -1,5 +1,6 @@
 const { validationResult } = require("express-validator");
 const User = require("../models/User");
+
 const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -7,6 +8,8 @@ const validate = (req, res, next) => {
   }
   next();
 };
+
+//! User validations
 
 //* User ID Validator
 const idValidator = async (id) => {
@@ -16,6 +19,7 @@ const idValidator = async (id) => {
   }
 };
 
+//* Email exists validator
 const emailExists = async (email) => {
   const emailUser = await User.findOne({ email });
   if (emailUser) {

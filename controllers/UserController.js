@@ -200,6 +200,15 @@ const deleteUsers = async (req = request, res = response) => {
   try {
     const { id } = req.params;
 
+    const user = await User.findOne({ state: false });
+
+    if (user.state === false) {
+      return res.status(400).json({
+        success: false,
+        message: "User is already blocked.",
+      });
+    }
+
     const deletedUser = await User.findByIdAndUpdate(
       id,
       { state: false },
