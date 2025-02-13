@@ -1,5 +1,6 @@
 const { validationResult } = require("express-validator");
 const User = require("../models/User");
+const Category = require("../models/Category");
 
 const validate = (req, res, next) => {
   const errors = validationResult(req);
@@ -27,4 +28,28 @@ const emailExists = async (email) => {
   }
 };
 
-module.exports = { validate, idValidator, emailExists };
+//! Category validations
+
+//* Category ID Validator
+const idCategoryValidator = async (id) => {
+  const categoryId = await Category.findById(id);
+  if (!categoryId) {
+    throw new Error(`User with id ${categoryId} not found.`);
+  }
+};
+
+//* Name validator
+const nameExists = async (name) => {
+  const nameCategory = await Category.findOne({ name });
+  if (nameCategory) {
+    throw new Error(`Category with name ${nameCategory.name} exists already.`);
+  }
+};
+
+module.exports = {
+  validate,
+  idValidator,
+  emailExists,
+  nameExists,
+  idCategoryValidator,
+};

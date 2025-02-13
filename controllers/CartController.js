@@ -104,7 +104,7 @@ const createCart = async (req, res) => {
     if (!products || products.length === 0) {
       return res.status(404).json({
         success: false,
-        message: "Products with provided IDs not found.",
+        message: "Products with IDs provided not found.",
       });
     }
 
@@ -182,7 +182,7 @@ const updateCart = async (req = request, res = response) => {
 
       updatedFields.products = products.map((product) => ({
         productId: product._id,
-        quantity: 1, // Puedes manejar la cantidad desde el request si es necesario
+        quantity: 1,
       }));
 
       updatedFields.totalPrice = products.reduce(
