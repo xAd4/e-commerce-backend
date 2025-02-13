@@ -108,23 +108,22 @@ const createCart = async (req, res) => {
       });
     }
 
+    const cartProducts = products.map((product) => ({
+      productId: product._id,
+      quantity: 1,
+    }));
+
     const totalPrice = products.reduce(
       (sum, product) => sum + product.price,
       0
     );
 
-    const newCart = new Cart({ userId, productsIds, totalPrice });
+    const newCart = new Cart({ userId, products: cartProducts, totalPrice });
     await newCart.save();
 
     res.status(201).json({
       success: true,
-      data: {
-        cart: {
-          user: newCart.userId,
-          products: newCart.products,
-          totalPrice: newCart.totalPrice,
-        },
-      },
+      data: { cart: newCart },
       message: "Cart created successfully",
     });
   } catch (error) {
