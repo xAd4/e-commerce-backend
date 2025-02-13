@@ -118,7 +118,13 @@ const createCart = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      data: { cart: newCart },
+      data: {
+        cart: {
+          user: newCart.userId,
+          products: newCart.products,
+          totalPrice: newCart.totalPrice,
+        },
+      },
       message: "Cart created successfully",
     });
   } catch (error) {
