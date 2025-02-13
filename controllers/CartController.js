@@ -147,10 +147,11 @@ const createCart = async (req, res) => {
  * @param {express.Response} res - Express response object.
  * @returns {Promise<void>} Sends a JSON response containing the updated cart.
  */
+
 const updateCart = async (req = request, res = response) => {
   try {
     const { id } = req.params;
-    const data = req.body;
+    const { productsIds } = req.body;
 
     const cart = await Cart.findById(id);
     if (!cart) {
@@ -160,22 +161,37 @@ const updateCart = async (req = request, res = response) => {
       });
     }
 
-    if (data.productsIds) {
-      if (!Array.isArray(data.productsIds) || data.productsIds.length === 0) {
+    let updatedFields = {};
+
+    if (productsIds) {
+      if (!Array.isArray(productsIds) || productsIds.length === 0) {
         return res.status(400).json({
           success: false,
           message: "productsIds must be a non-empty array.",
         });
       }
 
-      const products = await Product.find({ _id: { $in: data.productsIds } });
-      data.totalPrice = products.reduce(
+      const products = await Product.find({ _id: { $in: productsIds } });
+
+      if (!products || products.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "Some or all products not found.",
+        });
+      }
+
+      updatedFields.products = products.map((product) => ({
+        productId: product._id,
+        quantity: 1, // Puedes manejar la cantidad desde el request si es necesario
+      }));
+
+      updatedFields.totalPrice = products.reduce(
         (sum, product) => sum + product.price,
         0
       );
     }
 
-    const updatedCart = await Cart.findByIdAndUpdate(id, data, {
+    const updatedCart = await Cart.findByIdAndUpdate(id, updatedFields, {
       new: true,
       runValidators: true,
     });
