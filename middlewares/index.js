@@ -1,6 +1,6 @@
 //! Barrel File
 
 const encryptPassword = require("./encryptPasword");
-const validate = require("./validate");
+const { validate, idValidator, emailExists } = require("./validate");
 
-module.exports = { encryptPassword, validate };
+module.exports = { encryptPassword, validate, idValidator, emailExists };

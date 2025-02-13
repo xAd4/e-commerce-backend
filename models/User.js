@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-const { encryptPassword } = require("../middlewares/index");
+const encryptPassword = require("../middlewares/encryptPasword");
 
 const UserSchema = new mongoose.Schema({
   name: { type: String, required: true },

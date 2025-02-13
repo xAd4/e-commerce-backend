@@ -55,7 +55,7 @@ const getUsers = async (req = request, res = response) => {
  * @returns {Promise<void>} Sends a JSON response containing the user data.
  *
  * @example
- * // GET /users/12345
+ * // GET /users/uid
  * getByIdUsers(req, res);
  */
 const getByIdUsers = async (req = request, res = response) => {
@@ -131,7 +131,7 @@ const createUsers = async (req = request, res = response) => {
  * @returns {Promise<void>} Sends a JSON response containing the updated user data.
  *
  * @example
- * // PUT /users/12345
+ * // PUT /users/uid
  * // req.body = { name: 'Jane Doe', password: 'newpassword123' }
  * updateUsers(req, res);
  */
@@ -193,7 +193,7 @@ const updateUsers = async (req = request, res = response) => {
  * @returns {Promise<void>} Sends a JSON response confirming the deletion.
  *
  * @example
- * // DELETE /users/12345
+ * // DELETE /users/uid
  * deleteUsers(req, res);
  */
 const deleteUsers = async (req = request, res = response) => {
