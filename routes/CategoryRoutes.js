@@ -1,5 +1,8 @@
 const express = require("express");
 const { check } = require("express-validator");
+const isAdmin = require("../middlewares/isAdmin");
+const hasRole = require("../middlewares/hasRole");
+const validateJWT = require("../middlewares/validateJWT");
 
 const {
   getCategories,
@@ -35,6 +38,9 @@ router.post(
 router.put(
   "/:id",
   [
+    validateJWT,
+    isAdmin,
+    hasRole("admin", "user"),
     check("id").isMongoId().withMessage("Must be Mongo ID"),
     check("name").custom(nameExists),
     validate,
@@ -44,7 +50,13 @@ router.put(
 
 router.delete(
   "/:id",
-  [check("id").isMongoId().withMessage("Must be Mongo ID"), validate],
+  [
+    validateJWT,
+    isAdmin,
+    hasRole("admin", "user"),
+    check("id").isMongoId().withMessage("Must be Mongo ID"),
+    validate,
+  ],
   deleteCategory
 ); // TODO : Allow only user-admin can do delete
 

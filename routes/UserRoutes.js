@@ -8,6 +8,9 @@ const {
   deleteUsers,
 } = require("../controllers/index");
 const { validate, idValidator, emailExists } = require("../middlewares/index");
+const isAdmin = require("../middlewares/isAdmin");
+const hasRole = require("../middlewares/hasRole");
+const validateJWT = require("../middlewares/validateJWT");
 
 const router = express.Router();
 
@@ -42,6 +45,9 @@ router.post(
 router.put(
   "/:id",
   [
+    validateJWT,
+    isAdmin,
+    hasRole("admin", "user"),
     check("id").isMongoId().withMessage("Must be Mongo ID"),
     check("id").custom(idValidator),
     check("email").custom(emailExists),
@@ -53,6 +59,9 @@ router.put(
 router.delete(
   "/:id",
   [
+    validateJWT,
+    isAdmin,
+    hasRole("admin", "user"),
     check("id").isMongoId().withMessage("Must be Mongo ID"),
     check("id").custom(idValidator),
     validate,

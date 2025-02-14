@@ -10,6 +10,7 @@ const {
   CategoryRoutes,
   ProductRoutes,
   OrderRoutes,
+  AuthRoutes,
 } = require("./routes/index");
 
 require("dotenv").config();
@@ -37,6 +38,7 @@ app.use("/carts", CartRoutes);
 app.use("/categories", CategoryRoutes);
 app.use("/products", ProductRoutes);
 app.use("/orders", OrderRoutes);
+app.use("/login", AuthRoutes);
 
 // Puerto
 const PORT = process.env.PORT;

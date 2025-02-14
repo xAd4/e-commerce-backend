@@ -8,6 +8,8 @@ const {
   updateProduct,
   deleteProduct,
 } = require("../controllers/index");
+const hasRole = require("../middlewares/hasRole");
+const validateJWT = require("../middlewares/validateJWT");
 
 const router = express.Router();
 
@@ -34,13 +36,23 @@ router.post(
 );
 router.put(
   "/:id",
-  [check("id").isMongoId().withMessage("Must be Mongo ID"), validate],
+  [
+    validateJWT,
+    hasRole("admin", "user"),
+    check("id").isMongoId().withMessage("Must be Mongo ID"),
+    validate,
+  ],
   updateProduct
 );
 
 router.delete(
   "/:id",
-  [check("id").isMongoId().withMessage("Must be Mongo ID"), validate],
+  [
+    validateJWT,
+    hasRole("admin", "user"),
+    check("id").isMongoId().withMessage("Must be Mongo ID"),
+    validate,
+  ],
   deleteProduct
 );
 
