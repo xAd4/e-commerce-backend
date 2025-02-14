@@ -1,8 +1,8 @@
 const express = require("express");
 const { check, body } = require("express-validator");
-const validateJWT = require("../middlewares/validateJWT");
-const hasRole = require("../middlewares/hasRole");
-const { validate } = require("../middlewares/validate");
+const validateJWT = require("../middlewares/validateJWT"); /* */
+const hasRole = require("../middlewares/hasRole"); /* */
+const { validate } = require("../middlewares/validate"); /* */
 
 const {
   getCarts,
@@ -10,7 +10,7 @@ const {
   createCart,
   updateCart,
   deleteCart,
-} = require("../controllers/index");
+} = require("../controllers/CartController");
 
 const router = express.Router();
 

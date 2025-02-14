@@ -1,6 +1,6 @@
 const { request, response } = require("express");
 const bcrypt = require("bcryptjs");
-const { User } = require("../models/index");
+const User = require("../models/User");
 
 /**
  * Retrieves active users from the database with pagination.

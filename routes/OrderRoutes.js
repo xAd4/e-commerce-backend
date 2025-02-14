@@ -1,11 +1,12 @@
 const express = require("express");
+
 const {
   getOrders,
   getByIdOrder,
   createOrder,
   updateOrder,
   deleteOrder,
-} = require("../controllers/index");
+} = require("../controllers/OrderController");
 
 const router = express.Router();
 

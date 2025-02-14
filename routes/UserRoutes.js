@@ -1,16 +1,21 @@
 const express = require("express");
 const { check } = require("express-validator");
-const { validate, idValidator, emailExists } = require("../middlewares/index");
+const {
+  validate,
+  idValidator,
+  emailExists,
+} = require("../middlewares/validate");
 const validateJWT = require("../middlewares/validateJWT");
 const isAdmin = require("../middlewares/isAdmin");
 const hasRole = require("../middlewares/hasRole");
+
 const {
   getUsers,
-  createUsers,
   getByIdUsers,
+  createUsers,
   updateUsers,
   deleteUsers,
-} = require("../controllers/index");
+} = require("../controllers/UserController");
 
 const router = express.Router();
 
@@ -54,7 +59,7 @@ router.put(
     validate,
   ],
   updateUsers
-); //TODO: Allow that admin can do put
+);
 
 router.delete(
   "/:id",
@@ -67,6 +72,6 @@ router.delete(
     validate,
   ],
   deleteUsers
-); //TODO: Allow that admin can do delete
+);
 
 module.exports = router;

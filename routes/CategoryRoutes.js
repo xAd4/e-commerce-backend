@@ -3,6 +3,7 @@ const { check } = require("express-validator");
 const validateJWT = require("../middlewares/validateJWT");
 const isAdmin = require("../middlewares/isAdmin");
 const hasRole = require("../middlewares/hasRole");
+const { validate, nameExists } = require("../middlewares/validate");
 
 const {
   getCategories,
@@ -10,9 +11,7 @@ const {
   createCategory,
   updateCategory,
   deleteCategory,
-} = require("../controllers/index");
-
-const { validate, nameExists } = require("../middlewares/index");
+} = require("../controllers/CategoryController");
 
 const router = express.Router();
 
@@ -49,7 +48,7 @@ router.put(
     validate,
   ],
   updateCategory
-); // TODO: Allow only user-admin can do put
+);
 
 router.delete(
   "/:id",
@@ -61,6 +60,6 @@ router.delete(
     validate,
   ],
   deleteCategory
-); // TODO : Allow only user-admin can do delete
+);
 
 module.exports = router;

@@ -3,13 +3,14 @@ const { check } = require("express-validator");
 const { validate } = require("../middlewares/validate");
 const validateJWT = require("../middlewares/validateJWT");
 const hasRole = require("../middlewares/hasRole");
+
 const {
   getProducts,
   getByIdProduct,
   createProduct,
   updateProduct,
   deleteProduct,
-} = require("../controllers/index");
+} = require("../controllers/ProductController");
 
 const router = express.Router();
 
