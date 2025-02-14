@@ -9,12 +9,7 @@ const {
   deleteCategory,
 } = require("../controllers/index");
 
-const {
-  validate,
-  idValidator,
-  nameExists,
-  idCategoryValidator,
-} = require("../middlewares/index");
+const { validate, nameExists } = require("../middlewares/index");
 
 const router = express.Router();
 
@@ -23,11 +18,7 @@ router.get("/", getCategories);
 
 router.get(
   "/:id",
-  [
-    check("id").isMongoId().withMessage("Must be Mongo ID"),
-    check("id").custom(idCategoryValidator),
-    validate,
-  ],
+  [check("id").isMongoId().withMessage("Must be Mongo ID"), validate],
   getByIdCategory
 );
 
@@ -45,7 +36,6 @@ router.put(
   "/:id",
   [
     check("id").isMongoId().withMessage("Must be Mongo ID"),
-    check("id").custom(idCategoryValidator),
     check("name").custom(nameExists),
     validate,
   ],
@@ -54,11 +44,7 @@ router.put(
 
 router.delete(
   "/:id",
-  [
-    check("id").isMongoId().withMessage("Must be Mongo ID"),
-    check("id").custom(idCategoryValidator),
-    validate,
-  ],
+  [check("id").isMongoId().withMessage("Must be Mongo ID"), validate],
   deleteCategory
 ); // TODO : Allow only user-admin can do delete
 

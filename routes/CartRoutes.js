@@ -1,4 +1,7 @@
 const express = require("express");
+const { check, body } = require("express-validator");
+const { validate } = require("../middlewares/validate");
+
 const {
   getCarts,
   getByIdCart,
@@ -11,9 +14,39 @@ const router = express.Router();
 
 //* User Endpoints
 router.get("/", getCarts);
-router.get("/:id", getByIdCart); // TODO: Validate that ID is valid
-router.post("/", createCart); // TODO: Validate the body
-router.put("/:id", updateCart); // TODO: Validate body and ID
-router.delete("/:id", deleteCart); // TODO : Validate body and ID
+
+router.get(
+  "/:id",
+  [check("id").isMongoId().withMessage("Must be Mongo DB"), validate],
+  getByIdCart
+);
+
+router.post(
+  "/",
+  [
+    check("userId").isMongoId().withMessage("Must be Mongo ID"),
+    check("userId").not().isEmpty().withMessage("User ID is required."),
+    body("products.*.productId")
+      .isMongoId()
+      .withMessage("Must be Mongo ID")
+      .not()
+      .isEmpty()
+      .withMessage("Product is required"),
+    validate,
+  ],
+  createCart
+);
+
+router.put(
+  "/:id",
+  [check("id").isMongoId().withMessage("Must be Mongo DB"), validate],
+  updateCart
+);
+
+router.delete(
+  "/:id",
+  [check("id").isMongoId().withMessage("Must be Mongo DB"), validate],
+  deleteCart
+);
 
 module.exports = router;
