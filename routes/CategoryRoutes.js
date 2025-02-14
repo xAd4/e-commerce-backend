@@ -1,8 +1,8 @@
 const express = require("express");
 const { check } = require("express-validator");
+const validateJWT = require("../middlewares/validateJWT");
 const isAdmin = require("../middlewares/isAdmin");
 const hasRole = require("../middlewares/hasRole");
-const validateJWT = require("../middlewares/validateJWT");
 
 const {
   getCategories,
@@ -28,6 +28,9 @@ router.get(
 router.post(
   "/",
   [
+    validateJWT,
+    isAdmin,
+    hasRole("admin", "user"),
     check("name").not().isEmpty().withMessage("Name is required."),
     check("name").custom(nameExists),
     validate,

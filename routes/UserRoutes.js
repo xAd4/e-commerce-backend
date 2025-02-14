@@ -1,5 +1,9 @@
 const express = require("express");
 const { check } = require("express-validator");
+const { validate, idValidator, emailExists } = require("../middlewares/index");
+const validateJWT = require("../middlewares/validateJWT");
+const isAdmin = require("../middlewares/isAdmin");
+const hasRole = require("../middlewares/hasRole");
 const {
   getUsers,
   createUsers,
@@ -7,10 +11,6 @@ const {
   updateUsers,
   deleteUsers,
 } = require("../controllers/index");
-const { validate, idValidator, emailExists } = require("../middlewares/index");
-const isAdmin = require("../middlewares/isAdmin");
-const hasRole = require("../middlewares/hasRole");
-const validateJWT = require("../middlewares/validateJWT");
 
 const router = express.Router();
 

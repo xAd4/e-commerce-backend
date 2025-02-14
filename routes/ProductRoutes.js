@@ -1,6 +1,8 @@
 const express = require("express");
 const { check } = require("express-validator");
 const { validate } = require("../middlewares/validate");
+const validateJWT = require("../middlewares/validateJWT");
+const hasRole = require("../middlewares/hasRole");
 const {
   getProducts,
   getByIdProduct,
@@ -8,8 +10,6 @@ const {
   updateProduct,
   deleteProduct,
 } = require("../controllers/index");
-const hasRole = require("../middlewares/hasRole");
-const validateJWT = require("../middlewares/validateJWT");
 
 const router = express.Router();
 
@@ -25,6 +25,8 @@ router.get(
 router.post(
   "/",
   [
+    validateJWT,
+    hasRole("admin", "user"),
     check("name").not().isEmpty().withMessage("Name is required,"),
     check("description").not().isEmpty().withMessage("Description is required"),
     check("price").not().isEmpty().withMessage("Price is required."),

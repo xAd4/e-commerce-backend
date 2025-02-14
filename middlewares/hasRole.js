@@ -1,4 +1,3 @@
-//* hasRole validator
 const hasRole = (...roles) => {
   return (req, res = response, next) => {
     if (!req.userAuthenticated)

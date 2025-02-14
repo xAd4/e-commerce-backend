@@ -1,4 +1,3 @@
-//* isAdmin validator
 const isAdmin = (req = request, res = response, next) => {
   if (!req.userAuthenticated) {
     return res.status(500).json({

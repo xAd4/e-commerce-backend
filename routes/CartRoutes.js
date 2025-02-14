@@ -1,5 +1,7 @@
 const express = require("express");
 const { check, body } = require("express-validator");
+const validateJWT = require("../middlewares/validateJWT");
+const hasRole = require("../middlewares/hasRole");
 const { validate } = require("../middlewares/validate");
 
 const {
@@ -24,6 +26,8 @@ router.get(
 router.post(
   "/",
   [
+    validateJWT,
+    hasRole("admin", "user"),
     check("userId").isMongoId().withMessage("Must be Mongo ID"),
     check("userId").not().isEmpty().withMessage("User ID is required."),
     body("products.*.productId")
@@ -39,13 +43,23 @@ router.post(
 
 router.put(
   "/:id",
-  [check("id").isMongoId().withMessage("Must be Mongo DB"), validate],
+  [
+    validateJWT,
+    hasRole("admin", "user"),
+    check("id").isMongoId().withMessage("Must be Mongo DB"),
+    validate,
+  ],
   updateCart
 );
 
 router.delete(
   "/:id",
-  [check("id").isMongoId().withMessage("Must be Mongo DB"), validate],
+  [
+    validateJWT,
+    hasRole("admin", "user"),
+    check("id").isMongoId().withMessage("Must be Mongo DB"),
+    validate,
+  ],
   deleteCart
 );
 
