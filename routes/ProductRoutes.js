@@ -33,6 +33,10 @@ router.get(
 
 // POST / - Creates a product
 const createProductSchema = {
+  userId: {
+    in: ["body"],
+    isMongoId: { errorMessage: "Must be Mongo ID" },
+  },
   name: {
     in: ["body"],
     notEmpty: { errorMessage: "Name is required." },

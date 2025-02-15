@@ -32,7 +32,7 @@ app.use(
   })
 );
 
-// Rutas
+// Routes
 app.use("/users", UserRoutes);
 app.use("/carts", CartRoutes);
 app.use("/categories", CategoryRoutes);
@@ -40,11 +40,11 @@ app.use("/products", ProductRoutes);
 app.use("/orders", OrderRoutes);
 app.use("/login", AuthRoutes);
 
-// Puerto
+// Port
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server ${PORT} running`);
 });
 
-// Conexión a la base de datos
+// Connect to database
 connectDB();

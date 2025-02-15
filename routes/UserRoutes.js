@@ -1,10 +1,6 @@
 const express = require("express");
 const { checkSchema } = require("express-validator");
-const {
-  validate,
-  idValidator,
-  emailExists,
-} = require("../middlewares/validate");
+const { validate, emailExists } = require("../middlewares/validate");
 const validateJWT = require("../middlewares/validateJWT");
 const isAdmin = require("../middlewares/isAdmin");
 const hasRole = require("../middlewares/hasRole");
@@ -27,7 +23,6 @@ const getUserByIdSchema = {
   id: {
     in: ["params"],
     isMongoId: { errorMessage: "Must be Mongo ID" },
-    custom: { options: idValidator },
   },
 };
 
@@ -41,6 +36,7 @@ const createUserSchema = {
   },
   email: {
     in: ["body"],
+    notEmpty: { errorMessage: "Email is required." },
     isEmail: { errorMessage: "Must be valid email." },
     custom: { options: emailExists },
   },
@@ -61,7 +57,6 @@ const updateUserSchema = {
   id: {
     in: ["params"],
     isMongoId: { errorMessage: "Must be Mongo ID" },
-    custom: { options: idValidator },
   },
   email: {
     in: ["body"],
@@ -87,7 +82,6 @@ const deleteUserSchema = {
   id: {
     in: ["params"],
     isMongoId: { errorMessage: "Must be Mongo ID" },
-    custom: { options: idValidator },
   },
 };
 

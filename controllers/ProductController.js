@@ -98,8 +98,9 @@ const getByIdProduct = async (req = request, res = response) => {
  */
 const createProduct = async (req = request, res = response) => {
   try {
-    const { name, description, price, stock, categoryId } = req.body;
+    const { userId, name, description, price, stock, categoryId } = req.body;
     const newProduct = new Product({
+      userId,
       name,
       description,
       price,
@@ -143,6 +144,16 @@ const updateProduct = async (req = request, res = response) => {
     const data = req.body;
 
     const product = await Product.findById(id);
+
+    console.log("product.user:", product.userId.toString());
+    console.log("req.user._id:", req.userAuthenticated._id.toString());
+
+    if (product.userId.toString() !== req.userAuthenticated._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "You do not have permission to update this product",
+      });
+    }
 
     if (!product) {
       return res.status(404).json({
@@ -196,12 +207,19 @@ const updateProduct = async (req = request, res = response) => {
 const deleteProduct = async (req = request, res = response) => {
   try {
     const { id } = req.params;
+    const product = await Product.findById(id);
 
-    const deletedProduct = await Product.findByIdAndUpdate(
-      id,
-      { state: false },
-      { new: true }
-    );
+    console.log("product.user:", product.userId.toString());
+    console.log("req.user._id:", req.userAuthenticated._id.toString());
+
+    if (product.userId.toString() !== req.userAuthenticated._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "You do not have permission to update this product",
+      });
+    }
+
+    const deletedProduct = await Product.findByIdAndDelete(id);
 
     if (!deletedProduct) {
       return res.status(404).json({

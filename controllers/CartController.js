@@ -1,6 +1,7 @@
 const { request, response } = require("express");
 const Cart = require("../models/Cart");
 const Product = require("../models/Product");
+const User = require("../models/User");
 
 /**
  * Retrieves all carts with pagination.
@@ -108,6 +109,14 @@ const createCart = async (req, res) => {
       });
     }
 
+    const userCart = await Cart.findOne({ userId });
+    if (userCart) {
+      return res.status(404).json({
+        success: false,
+        message: "User already have a cart.",
+      });
+    }
+
     const cartProducts = products.map((product) => ({
       productId: product._id,
       quantity: 1,
@@ -158,6 +167,16 @@ const updateCart = async (req = request, res = response) => {
       return res.status(404).json({
         success: false,
         message: "Cart not found",
+      });
+    }
+
+    console.log("cart.user:", cart.userId.toString());
+    console.log("req.user._id:", req.userAuthenticated._id.toString());
+
+    if (cart.userId.toString() !== req.userAuthenticated._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "You do not have permission to update this cart",
       });
     }
 
@@ -226,6 +245,16 @@ const deleteCart = async (req = request, res = response) => {
   try {
     const { id } = req.params;
     const cart = await Cart.findById(id);
+
+    console.log("cart.user:", cart.userId.toString());
+    console.log("req.user._id:", req.userAuthenticated._id.toString());
+
+    if (cart.userId.toString() !== req.userAuthenticated._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "You do not have permission to update this cart",
+      });
+    }
 
     if (!cart) {
       return res.status(404).json({

@@ -38,6 +38,7 @@ const validateJWT = async (req = request, res = response, next) => {
     if (!user.state) return res.status(401).json({ msg: "User state: false" });
 
     req.userAuthenticated = user;
+
     next();
   } catch (error) {
     console.log(error);
