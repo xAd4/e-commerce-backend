@@ -1,8 +1,8 @@
 const express = require("express");
-const { check, body } = require("express-validator");
-const validateJWT = require("../middlewares/validateJWT"); /* */
-const hasRole = require("../middlewares/hasRole"); /* */
-const { validate } = require("../middlewares/validate"); /* */
+const { checkSchema } = require("express-validator");
+const validateJWT = require("../middlewares/validateJWT");
+const hasRole = require("../middlewares/hasRole");
+const { validate } = require("../middlewares/validate");
 
 const {
   getCarts,
@@ -14,52 +14,62 @@ const {
 
 const router = express.Router();
 
-//* User Endpoints
+// GET / - List of carts
 router.get("/", getCarts);
 
-router.get(
-  "/:id",
-  [check("id").isMongoId().withMessage("Must be Mongo DB"), validate],
-  getByIdCart
-);
+// GET /:id - Get a cart by ID
+const getCartByIdSchema = {
+  id: {
+    in: ["params"],
+    isMongoId: { errorMessage: "Must be Mongo DB" },
+  },
+};
+
+router.get("/:id", [checkSchema(getCartByIdSchema), validate], getByIdCart);
+
+// POST / - Create a cart
+const createCartSchema = {
+  userId: {
+    in: ["body"],
+    notEmpty: { errorMessage: "User ID is required." },
+    isMongoId: { errorMessage: "Must be Mongo ID" },
+  },
+  "products.*.productId": {
+    in: ["body"],
+    notEmpty: { errorMessage: "Product is required" },
+    isMongoId: { errorMessage: "Must be Mongo ID" },
+  },
+};
 
 router.post(
   "/",
   [
     validateJWT,
     hasRole("admin", "user"),
-    check("userId").isMongoId().withMessage("Must be Mongo ID"),
-    check("userId").not().isEmpty().withMessage("User ID is required."),
-    body("products.*.productId")
-      .isMongoId()
-      .withMessage("Must be Mongo ID")
-      .not()
-      .isEmpty()
-      .withMessage("Product is required"),
+    checkSchema(createCartSchema),
     validate,
   ],
   createCart
 );
 
+// PUT /:id - Update a cart by ID
+const idParamSchema = {
+  id: {
+    in: ["params"],
+    isMongoId: { errorMessage: "Must be Mongo DB" },
+  },
+};
+
 router.put(
   "/:id",
-  [
-    validateJWT,
-    hasRole("admin", "user"),
-    check("id").isMongoId().withMessage("Must be Mongo DB"),
-    validate,
-  ],
+  [validateJWT, hasRole("admin", "user"), checkSchema(idParamSchema), validate],
   updateCart
 );
 
+// DELETE /:id - Delete a cart by ID
 router.delete(
   "/:id",
-  [
-    validateJWT,
-    hasRole("admin", "user"),
-    check("id").isMongoId().withMessage("Must be Mongo DB"),
-    validate,
-  ],
+  [validateJWT, hasRole("admin", "user"), checkSchema(idParamSchema), validate],
   deleteCart
 );
 

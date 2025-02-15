@@ -1,5 +1,5 @@
 const express = require("express");
-const { check } = require("express-validator");
+const { checkSchema } = require("express-validator");
 const {
   validate,
   idValidator,
@@ -19,33 +19,56 @@ const {
 
 const router = express.Router();
 
-//* User Endpoints
+// GET / - List of users
 router.get("/", getUsers);
 
-router.get(
-  "/:id",
-  [
-    check("id").isMongoId().withMessage("Must be Mongo ID"),
-    check("id").custom(idValidator),
-    validate,
-  ],
-  getByIdUsers
-);
+// GET /:id - Get a user by ID
+const getUserByIdSchema = {
+  id: {
+    in: ["params"],
+    isMongoId: { errorMessage: "Must be Mongo ID" },
+    custom: { options: idValidator },
+  },
+};
 
-router.post(
-  "/",
-  [
-    check("name").not().isEmpty().withMessage("Name is required."),
-    check("email").isEmail().withMessage("Must be valid email."),
-    check("email").custom(emailExists),
-    check("password").not().isEmpty().withMessage("Password is required."),
-    check("password")
-      .isLength({ min: 6 })
-      .withMessage("Password must has 6 characters or more."),
-    validate,
-  ],
-  createUsers
-);
+router.get("/:id", [checkSchema(getUserByIdSchema), validate], getByIdUsers);
+
+// POST / - Create a user
+const createUserSchema = {
+  name: {
+    in: ["body"],
+    notEmpty: { errorMessage: "Name is required." },
+  },
+  email: {
+    in: ["body"],
+    isEmail: { errorMessage: "Must be valid email." },
+    custom: { options: emailExists },
+  },
+  password: {
+    in: ["body"],
+    notEmpty: { errorMessage: "Password is required." },
+    isLength: {
+      options: { min: 6 },
+      errorMessage: "Password must have 6 characters or more.",
+    },
+  },
+};
+
+router.post("/", [checkSchema(createUserSchema), validate], createUsers);
+
+// PUT /:id - Update a user
+const updateUserSchema = {
+  id: {
+    in: ["params"],
+    isMongoId: { errorMessage: "Must be Mongo ID" },
+    custom: { options: idValidator },
+  },
+  email: {
+    in: ["body"],
+    optional: true,
+    custom: { options: emailExists },
+  },
+};
 
 router.put(
   "/:id",
@@ -53,13 +76,20 @@ router.put(
     validateJWT,
     isAdmin,
     hasRole("admin", "user"),
-    check("id").isMongoId().withMessage("Must be Mongo ID"),
-    check("id").custom(idValidator),
-    check("email").custom(emailExists),
+    checkSchema(updateUserSchema),
     validate,
   ],
   updateUsers
 );
+
+// DELETE /:id - Delete a user
+const deleteUserSchema = {
+  id: {
+    in: ["params"],
+    isMongoId: { errorMessage: "Must be Mongo ID" },
+    custom: { options: idValidator },
+  },
+};
 
 router.delete(
   "/:id",
@@ -67,8 +97,7 @@ router.delete(
     validateJWT,
     isAdmin,
     hasRole("admin", "user"),
-    check("id").isMongoId().withMessage("Must be Mongo ID"),
-    check("id").custom(idValidator),
+    checkSchema(deleteUserSchema),
     validate,
   ],
   deleteUsers

@@ -1,4 +1,21 @@
-const isAdmin = (req = request, res = response, next) => {
+/**
+ * Middleware to ensure that the authenticated user is an admin.
+ *
+ * This middleware assumes that a previous middleware has validated the JWT and attached the user
+ * object to `req.userAuthenticated`.
+ *
+ * @param {import('express').Request} req - Express request object containing the authenticated user.
+ * @param {import('express').Response} res - Express response object.
+ * @param {Function} next - Next middleware function.
+ * @returns {void} Proceeds to the next middleware if the user is an admin; otherwise, sends an error response.
+ *
+ * @example
+ * // Protecting an admin-only route:
+ * app.delete('/admin-route', isAdmin, (req, res) => {
+ *   // Route logic here.
+ * });
+ */
+const isAdmin = (req, res, next) => {
   if (!req.userAuthenticated) {
     return res.status(500).json({
       msg: "Role verification attempted without validating the token first",

@@ -1,5 +1,5 @@
 const express = require("express");
-const { check } = require("express-validator");
+const { checkSchema } = require("express-validator");
 const validateJWT = require("../middlewares/validateJWT");
 const isAdmin = require("../middlewares/isAdmin");
 const hasRole = require("../middlewares/hasRole");
@@ -15,14 +15,31 @@ const {
 
 const router = express.Router();
 
-//* User Endpoints
+// GET / - List of categories
 router.get("/", getCategories);
+
+// GET /:id - Get a category by ID
+const getCategoryByIdSchema = {
+  id: {
+    in: ["params"],
+    isMongoId: { errorMessage: "Must be Mongo ID" },
+  },
+};
 
 router.get(
   "/:id",
-  [check("id").isMongoId().withMessage("Must be Mongo ID"), validate],
+  [checkSchema(getCategoryByIdSchema), validate],
   getByIdCategory
 );
+
+// POST / - Create a category
+const createCategorySchema = {
+  name: {
+    in: ["body"],
+    notEmpty: { errorMessage: "Name is required." },
+    custom: { options: nameExists },
+  },
+};
 
 router.post(
   "/",
@@ -30,12 +47,24 @@ router.post(
     validateJWT,
     isAdmin,
     hasRole("admin", "user"),
-    check("name").not().isEmpty().withMessage("Name is required."),
-    check("name").custom(nameExists),
+    checkSchema(createCategorySchema),
     validate,
   ],
   createCategory
 );
+
+// PUT /:id - Update a category
+const updateCategorySchema = {
+  id: {
+    in: ["params"],
+    isMongoId: { errorMessage: "Must be Mongo ID" },
+  },
+  name: {
+    in: ["body"],
+    optional: true,
+    custom: { options: nameExists },
+  },
+};
 
 router.put(
   "/:id",
@@ -43,12 +72,19 @@ router.put(
     validateJWT,
     isAdmin,
     hasRole("admin", "user"),
-    check("id").isMongoId().withMessage("Must be Mongo ID"),
-    check("name").custom(nameExists),
+    checkSchema(updateCategorySchema),
     validate,
   ],
   updateCategory
 );
+
+// DELETE /:id - Delete a category
+const deleteCategorySchema = {
+  id: {
+    in: ["params"],
+    isMongoId: { errorMessage: "Must be Mongo ID" },
+  },
+};
 
 router.delete(
   "/:id",
@@ -56,7 +92,7 @@ router.delete(
     validateJWT,
     isAdmin,
     hasRole("admin", "user"),
-    check("id").isMongoId().withMessage("Must be Mongo ID"),
+    checkSchema(deleteCategorySchema),
     validate,
   ],
   deleteCategory
